@@ -1,0 +1,157 @@
+<DELIM, {>
+<DELIM,  >
+<COMMENT, //>
+<DELIM,  >
+<ID, Arquivo>
+<DELIM,  >
+<ID, test>
+<DELIM, 
+>
+<INT, int>
+<DELIM,  >
+<ID, i>
+<DELIM, ;>
+<DELIM,  >
+<INT, int>
+<DELIM,  >
+<ID, j>
+<DELIM, ;>
+<DELIM,  >
+<FLOAT, float>
+<DELIM,  >
+<ID, v>
+<DELIM, ;>
+<DELIM,  >
+<FLOAT, float>
+<DELIM,  >
+<ID, x>
+<DELIM, ;>
+<DELIM,  >
+<FLOAT, float>
+<DELIM, [>
+<NUM, 100>
+<DELIM, ]>
+<DELIM,  >
+<ID, a>
+<DELIM, ;>
+<DELIM, 
+>
+<WHILE, while>
+<DELIM, (>
+<DELIM,  >
+<TRUE, true>
+<DELIM,  >
+<DELIM, )>
+<DELIM,  >
+<DELIM, {>
+<DELIM, 
+>
+<DO, do>
+<DELIM,  >
+<ID, i>
+<DELIM,  >
+<ASSIGN, =>
+<DELIM,  >
+<ID, i>
+<SUMOP, +>
+<NUM, 1>
+<DELIM, ;>
+<DELIM,  >
+<WHILE, while>
+<DELIM, (>
+<DELIM,  >
+<ID, a>
+<DELIM, [>
+<ID, i>
+<DELIM, ]>
+<DELIM,  >
+<RELOP, <>
+<DELIM,  >
+<ID, v>
+<DELIM, )>
+<DELIM, ;>
+<DELIM, 
+>
+<DO, do>
+<DELIM,  >
+<ID, j>
+<DELIM,  >
+<ASSIGN, =>
+<DELIM,  >
+<ID, j>
+<SUMOP, ->
+<NUM, 1>
+<DELIM, ;>
+<DELIM,  >
+<WHILE, while>
+<DELIM, (>
+<DELIM,  >
+<ID, a>
+<DELIM, [>
+<ID, j>
+<DELIM, ]>
+<DELIM,  >
+<RELOP, >>
+<DELIM,  >
+<ID, v>
+<DELIM, )>
+<DELIM, ;>
+<DELIM, 
+>
+<IF, if>
+<DELIM, (>
+<DELIM,  >
+<ID, i>
+<DELIM,  >
+<RELOP, >=>
+<DELIM,  >
+<ID, j>
+<DELIM,  >
+<DELIM, )>
+<DELIM,  >
+<BREAK, break>
+<DELIM, ;>
+<DELIM, 
+>
+<ID, x>
+<DELIM,  >
+<ASSIGN, =>
+<DELIM,  >
+<ID, a>
+<DELIM, [>
+<ID, i>
+<DELIM, ]>
+<DELIM, ;>
+<DELIM,  >
+<ID, a>
+<DELIM, [>
+<ID, i>
+<DELIM, ]>
+<DELIM,  >
+<ASSIGN, =>
+<DELIM,  >
+<ID, a>
+<DELIM, [>
+<ID, j>
+<DELIM, ]>
+<DELIM, ;>
+<DELIM,  >
+<ID, a>
+<DELIM, [>
+<ID, j>
+<DELIM, ]>
+<DELIM,  >
+<ASSIGN, =>
+<DELIM,  >
+<ID, x>
+<DELIM, ;>
+<DELIM, 
+>
+<DELIM, }>
+<DELIM, 
+>
+<DELIM, }>
+<DELIM, 
+>
+<DELIM, 
+>
