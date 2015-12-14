@@ -1,0 +1,139 @@
+package br.ufmg.dcc.fernandes.ivan.parser;
+
+import br.ufmg.dcc.fernandes.ivan.symbols.*;
+import br.ufmg.dcc.fernandes.ivan.inter.*;
+import br.ufmg.dcc.fernandes.ivan.inter.Quad.Command;
+import java_cup.runtime.*;
+
+parser code {:
+                public SymbolsTable table = new SymbolsTable();
+                Generator generator = new Generator();
+            :}
+
+
+terminal                    INT, CHAR, FLOAT, BOOLEAN;
+terminal                    IF, ELSE, DO, WHILE, BREAK;
+
+terminal Boolean            BOOLEAN_LITERAL;
+
+terminal                    LBRACE, RBRACE, LBRACK, RBRACK;
+terminal                    LPAREN, RPAREN, SEMICOLON;
+terminal                    EQ, GT, LT, NOT;
+terminal                    EQEQ, LTEQ, GTEQ, NOTEQ;
+terminal                    ANDAND, OROR;
+terminal                    PLUS, MINUS, MULT, DIV;
+
+terminal String             IDENTIFIER;
+terminal Integer            INTEGER_LITERAL;
+terminal Float              FLOATING_POINT_LITERAL;
+
+non terminal                program, block, decls, decl;
+non terminal                stmts, stmt;
+non terminal Type           type;
+non terminal Expression        bool, join, equality, rel;
+non terminal Integer        expr, term;
+non terminal LType          loc;
+non terminal Expression     factor, unary;
+
+precedence nonassoc         IF;
+precedence nonassoc         ELSE;
+
+precedence left             PLUS, MINUS, OROR;
+precedence left             MULT, DIV, ANDAND;
+precedence left             MINUS, NOT;
+
+
+
+program ::= block:b;
+block   ::= LBRACE {: table.enterBlock(); :} decls stmts:sts RBRACE
+            {: table.leaveBlock(); :};
+decls   ::= decls decl
+          | ;
+decl    ::= type:t IDENTIFIER:id SEMICOLON
+            {: int entry = table.install(id, t);
+               if(entry == -1) System.err.println("Symbol "+id+" already defined in "+idleft+":"+idright); :};
+
+type    ::= type:t LBRACK INTEGER_LITERAL:il RBRACK
+            {: RESULT = new ArrayType(t, il); :}
+          | INT
+            {: RESULT = new Type("INT", 4); :}
+          | CHAR
+            {: RESULT = new Type("CHAR", 1); :}
+          | FLOAT
+            {: RESULT = new Type("FLOAT", 8); :}
+          | BOOLEAN
+            {: RESULT = new Type("BOOL", 1); :}
+            ;
+stmts   ::= stmts:sts stmt:st
+
+          |
+            ;
+stmt    ::= loc:l EQ bool:b SEMICOLON
+            {: if(!b.type.equals(l.type))
+                   System.err.println("Invalid type in attribution");
+               generator.gen(Command.ATTR, l.array, b.r, null); :}
+          | IF LPAREN bool:b RPAREN stmt:st
+
+          | IF LPAREN bool RPAREN stmt ELSE stmt
+
+          | WHILE LPAREN bool RPAREN stmt
+          | DO stmt WHILE LPAREN bool RPAREN SEMICOLON
+          | BREAK SEMICOLON
+          | block;
+loc     ::= loc:l LBRACK bool:b RBRACK
+            {: if(!b.type.name.equals("INT"))
+                   System.err.println("Invalid array accessor");
+               if(!l.type.name.equals("Array"))
+                   System.err.println("Invalid type");
+               Type tipo = ((ArrayType)l.type).innerType;
+               String t = generator.newTemp();
+               generator.gen(Command.MULT, t, b.r, l.type.size);
+               RESULT = new LType(tipo, t, l.array); :}
+          | IDENTIFIER:id
+            {: RESULT = new LType(table.entries[table.getEntry(id)].tipo, null, id); :};
+bool    ::= bool OROR join
+          | join;
+join    ::= join ANDAND equality
+          | equality;
+equality ::= equality EQEQ rel
+           | equality NOTEQ rel
+           | rel;
+rel     ::= expr LT expr
+          | expr LTEQ expr
+          | expr GTEQ expr
+          | expr GT expr
+          | expr;
+expr    ::= expr:ex PLUS term:tr
+
+          | expr:ex MINUS term:tr
+
+          | term:tr
+            ;
+term    ::= term:tr MULT unary:un
+
+          | term:tr DIV unary:un
+
+          | unary:un
+            ;
+unary   ::= NOT unary:un
+            {:  :}
+          | MINUS unary:un
+            {: String t = generator.newTemp();
+               generator.gen(Command.UNMINUS, t, un.r, null);
+               RESULT = new Expression();
+               RESULT.r = t;
+               RESULT.type = un.type; :}
+          | factor:fct
+            {: RESULT = fct; :}
+            ;
+factor  ::= LPAREN bool:b RPAREN
+            {: RESULT = b; :}
+          | loc:l
+            {: RESULT = new Expression(l.array, l.type); :}
+          | INTEGER_LITERAL:il
+            {: RESULT = new Expression(il, new Type("INT", 4)); :}
+          | FLOATING_POINT_LITERAL:fl
+            {: RESULT = new Expression(fl, new Type("FLOAT", 8)); :}
+          | BOOLEAN_LITERAL:bl
+            {: RESULT = new Expression(bl, new Type("BOOL", 1)); :}
+            ;
